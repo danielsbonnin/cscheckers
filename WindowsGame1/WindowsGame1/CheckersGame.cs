@@ -14,7 +14,7 @@ namespace Checkers
             initSquares(this.squares);
         }
 
-        public CheckersGame(Square []squares)
+        public CheckersGame(Square[] squares)
         {
             this.squares = squares;
         }
@@ -479,6 +479,56 @@ namespace Checkers
                 return false;
             }
 
+        }
+
+        public double scoreGame(CheckersGame game, Boolean isWhite)
+        {
+            int i, whiteRowNum, redRowNum;
+            double whiteScore, redScore, scoreSum, score;
+
+            whiteScore = 0.0;
+            redScore = 0.0;
+
+            for (i = 0; i < 32; i++)
+            {
+                whiteRowNum = i / 4;
+                redRowNum = 7 - whiteRowNum;
+
+                //Calculate white portion of score
+                if (game.squares[i].squareType == CheckerType.whiteChecker)
+                    whiteScore += 1 + (whiteRowNum / 2);
+                else if (game.squares[i].squareType == CheckerType.redChecker)
+                    redScore += (1 + (redRowNum / 2));
+                else if (game.squares[i].squareType == CheckerType.whiteKing)
+                    whiteScore += 5;
+                else if (game.squares[i].squareType == CheckerType.redKing)
+                    redScore += 5;
+                else
+                    continue;
+            }
+            scoreSum = whiteScore + redScore;
+            if (whiteScore == 0)
+                return isWhite ? -1.0 : 1.0;
+            else if (redScore == 0)
+                return isWhite ? 1.0 : -1.0;
+            else if (whiteScore > redScore)
+            {
+                score = whiteScore / scoreSum;
+                if (isWhite)
+                    return score;
+                else
+                    return -score;
+            }
+            else if (redScore > whiteScore)
+            {
+                score = redScore / scoreSum;
+                if (isWhite)
+                    return -score;
+                else return score;
+            }
+            //Scores are equal and non-zero.
+            else
+                return 0.0;
         }
     }
 }
